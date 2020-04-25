@@ -1,31 +1,49 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div id="app">
+        <Navigation></Navigation>
+
+        <transition :name="transitionName">
+            <router-view></router-view>
+        </transition>
+
+        <footer class="page-footer font-small indigo">
+            <!-- Copyright -->
+            <div class="footer-copyright text-center py-3">
+                <p>© 2020 By Seth Phat aka Phat Tran Minh</p>
+            </div>
+            <!-- Copyright -->
+        </footer>
     </div>
-    <router-view/>
-  </div>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
+<script>
+    import Navigation from "./views/Navigation";
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+    export default {
+        components: {Navigation},
+        data() {
+            return {
+                transitionName: "fade"
+            }
+        },
+        watch: {
+            '$route' (to, from) {
+                const toDepth = to.path.split('/').length
+                const fromDepth = from.path.split('/').length
+                this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+            }
+        }
+    }
+</script>
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+<style scoped>
+    .indigo {
+        background-color: #3f51b5 !important;
+    }
+
+    .footer-copyright {
+        overflow: hidden;
+        color: rgba(255,255,255,0.6);
+        background-color: rgba(0,0,0,0.2);
+    }
 </style>
