@@ -38,7 +38,7 @@
 
 <style scoped>
     .indigo {
-        background-color: #3f51b5 !important;
+        background-color: #27ae60 !important;
     }
 
     .footer-copyright {

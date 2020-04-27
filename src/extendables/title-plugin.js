@@ -5,17 +5,19 @@
  */
 import {SITE_CONFIGS} from "@/configs";
 
-const TitlePlugin = function(Vue, options) {
+const TitlePlugin = {
+    install(Vue, options) {
 
-    /**
-     * Set Title For VuePage
-     * @param {string} title
-     * @param {string} brandTitleName
-     */
-    Vue.setTitle = function(title, brandTitleName = SITE_CONFIGS.SITE_NAME) {
-        document.title = `${title} - ${brandTitleName}`
+        /**
+         * Set Title For VuePage
+         * @param {string} title
+         * @param {string} brandTitleName
+         */
+        Vue.prototype.$setTitle = function (title, brandTitleName = SITE_CONFIGS.SITE_NAME) {
+            document.title = `${title} - ${brandTitleName}`
+        }
+
     }
-
 }
 
 export {
