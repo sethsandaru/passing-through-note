@@ -7,16 +7,18 @@
 import Vue from 'vue'
 
 /**
- * Import here
+ * Import Vue's Plugins here
  */
 import {TitlePlugin} from "@/extendables/title-plugin";
 import {TranslatorPlugin} from "@/extendables/translator-plugin";
+import {AjaxPlugin} from "@/extendables/ajax-plugin";
 
 /**
  * Register here
  */
 Vue.use(TitlePlugin); // Added by Phat Tran
 Vue.use(TranslatorPlugin); // Added by Phat Tran
+Vue.use(AjaxPlugin); // Added by Phat Tran
 
 
 // Please make sure to keep a newline after injected a new plugin

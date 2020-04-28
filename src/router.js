@@ -14,12 +14,20 @@ export default new Router({
       component: Home
     },
     {
+      path: "/note/:noteId",
+      name: "note",
+      component: () => import(/* webpackChunkName: "about" */ './views/Note.vue')
+    },
+    {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     }
   ]
 })
+
+/**
+ * IDEA:
+ *  Main page => component:Home => Injected in the main bundle
+ *  Sub page => component: () => import(...) => Separated into {routeName}.[hash].js (Which is lazy-loaded when the route is visited)
+ */
