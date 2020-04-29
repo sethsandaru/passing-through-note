@@ -12,8 +12,9 @@
         }),
         components: {NoteComponent},
         methods: {
-            getNote(id) {
-                // this.$ajax.get('')
+            getNote(id = null) {
+                // this.$ajax.get(id || this.noteId)
+                this.$topbar.show();
             }
         },
         created() {
@@ -23,6 +24,7 @@
             }
 
             this.noteId = this.$route.params.noteId
+            this.getNote()
         }
     }
 </script>

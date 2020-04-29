@@ -12,6 +12,7 @@ import Vue from 'vue'
 import {TitlePlugin} from "@/extendables/title-plugin";
 import {TranslatorPlugin} from "@/extendables/translator-plugin";
 import {AjaxPlugin} from "@/extendables/ajax-plugin";
+import {TopBarPlugin} from "@/extendables/topbar-plugin";
 
 /**
  * Register here
@@ -19,6 +20,7 @@ import {AjaxPlugin} from "@/extendables/ajax-plugin";
 Vue.use(TitlePlugin); // Added by Phat Tran
 Vue.use(TranslatorPlugin); // Added by Phat Tran
 Vue.use(AjaxPlugin); // Added by Phat Tran
+Vue.use(TopBarPlugin); // Added by Phat Tran
 
 
 // Please make sure to keep a newline after injected a new plugin
