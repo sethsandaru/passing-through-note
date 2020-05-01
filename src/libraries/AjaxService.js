@@ -11,10 +11,30 @@ const AjaxService = {};
  * Prepare ajax
  * @param {string} method
  * @param {string} url
+ * @param {Object} data
  * @param {Object} options
  * @return {Promise}
  */
-const prepareAjax = function (method, url, options = {}) {
+const prepareAjax = function (
+    method,
+    url,
+    data = null,
+    options = {}
+) {
+    /**
+     * Fetch Basic Configuration
+     * @type {RequestInfo}
+     */
+    const ajaxOptions = {
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'Accept': 'application/json;charset=utf-8'
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+    };
+
+
     // URL Handling
     // If no https:// => Add base URL of my API
     // If have https => External API => no need to overwrite
@@ -32,38 +52,43 @@ const prepareAjax = function (method, url, options = {}) {
     return fetch({
         url,
         method,
+        body: data,
         ...options
-    }).then(result => result.json());
+    }).then(result => result.json())
+        .catch(options.onError || (e => console.error("FetchAPI-Error", e)));
 };
 
 /**
  * SEND a POST Request
  * @param url
+ * @param data
  * @param options
  * @return {Promise}
  */
-AjaxService.post = function (url, options = {}) {
-    return prepareAjax('POST', url, options);
+AjaxService.post = function (url, data, options = {}) {
+    return prepareAjax('POST', url, data, options);
 };
 
 /**
  * SEND a GET Request
  * @param url
+ * @param data
  * @param options
  * @return {Promise}
  */
-AjaxService.get = function (url, options = {}) {
-    return prepareAjax('GET', url, options);
+AjaxService.get = function (url, data, options = {}) {
+    return prepareAjax('GET', url, data, options);
 };
 
 /**
  * SEND a PUT Request
  * @param url
+ * @param data
  * @param options
  * @return {Promise}
  */
-AjaxService.get = function (url, options = {}) {
-    return prepareAjax('PUT', url, options);
+AjaxService.put = function (url, data, options = {}) {
+    return prepareAjax('PUT', url, data, options);
 };
 
 /**
@@ -72,7 +97,7 @@ AjaxService.get = function (url, options = {}) {
  * @param options
  * @return {Promise}
  */
-AjaxService.get = function (url, options = {}) {
+AjaxService.delete = function (url, options = {}) {
     return prepareAjax('DELETE', url, options);
 };
 
