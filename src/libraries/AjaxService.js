@@ -31,14 +31,16 @@ const prepareAjax = function (
             'Accept': 'application/json;charset=utf-8'
         },
         redirect: 'follow',
-        referrerPolicy: 'no-referrer',
+        referrerPolicy: 'no-referrer'
     };
+    Object.assign(ajaxOptions, options);
 
 
     // URL Handling
     // If no https:// => Add base URL of my API
     // If have https => External API => no need to overwrite
-    if (url.indexOf("https://") < 0) {
+    let modifiedURL = url;
+    if (url.indexOf("http://") < 0) {
         let appendUrl = REST_CONFIG.BASE_URL;
 
         if (url.charAt(0) !== '/') {
@@ -46,16 +48,15 @@ const prepareAjax = function (
         }
 
         appendUrl += url;
-        url = appendUrl;
+        modifiedURL = appendUrl;
     }
 
-    return fetch({
-        url,
+    return fetch(modifiedURL, {
         method,
         body: data,
-        ...options
+        ...ajaxOptions
     }).then(result => result.json())
-        .catch(options.onError || (e => console.error("FetchAPI-Error", e)));
+        .catch(ajaxOptions.onError || (e => console.error("FetchAPI-Error", e)));
 };
 
 /**

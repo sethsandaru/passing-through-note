@@ -5,7 +5,7 @@ import store from './store'
 import {} from './extendables'
 
 // Main styling...
-import 'bootstrap'
+require('bootstrap/dist/js/bootstrap.bundle');
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
