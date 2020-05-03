@@ -1,22 +1,23 @@
 <template>
-    <div>
-        <NoteComponent></NoteComponent>
+    <div v-if="noteBaseData">
+        <NoteComponent v-if="!needPasswordToAccess"></NoteComponent>
+        <NoteSpacePassword v-else :noteBaseData="noteBaseData" />
     </div>
 </template>
 
 <script>
     import NoteComponent from "@/components/NoteComponent";
     import {REST_CONFIG} from "@/configs/rest";
+    import NoteSpacePassword from "@/views/partials/NoteSpacePassword";
     export default {
         name: "Note",
         data: () => ({
             noteKey: null,
             noteBaseData: null,
 
-            hasPermission: false,
             needPasswordToAccess: false,
         }),
-        components: {NoteComponent},
+        components: {NoteSpacePassword, NoteComponent},
         methods: {
             getNote(id = null) {
                 // this.$topbar.show();
@@ -54,11 +55,10 @@
             permissionCheck() {
                 // First-rule
                 if (this.noteBaseData.visitorCanView) {
-                    this.hasPermission = true;
+                    this.needPasswordToAccess = false;
                 }
 
                 // Second-Rule => need password to access
-                this.hasPermission = false;
                 this.needPasswordToAccess = true;
 
             }

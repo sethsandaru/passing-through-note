@@ -4,3 +4,6 @@
  * @author Phat Tran
  */
 
+require('bootstrap/dist/js/bootstrap.bundle');
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'src/assets/css/base.css'
