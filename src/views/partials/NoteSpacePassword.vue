@@ -17,6 +17,11 @@
 </template>
 
 <script>
+    import {REST_CONFIG} from "@/configs/rest";
+    import {SITE_CONFIGS} from "@/configs";
+    import {CONSTANTS} from "@/configs/constants";
+    import {NoteStorage} from "@/libraries/NoteStorage";
+
     export default {
         name: "NoteSpacePassword",
         props: {
@@ -24,7 +29,11 @@
         },
         data: () => ({
             password: "",
-            isChecking: false
+            isChecking: false,
+
+            // security
+            failedTime: 0,
+            storageKey: "",
         }),
         methods: {
             /**
@@ -35,9 +44,15 @@
                     return;
                 }
 
-                // TODO: Continue this function
-                this.$ajax.post()
-                    .then(this.afterPasswordCheckSuccess)
+                const postData = {
+                    password: this.password
+                };
+
+                this.$ajax.post(
+                    REST_CONFIG.get('NOTE_SPACE.VERIFY'),
+                    postData,
+                    {onError: this.apiPasswordCheckErrorHandler}
+                ).then(this.afterPasswordCheckSuccess)
             },
 
             /**
@@ -45,9 +60,43 @@
              * @param {Object} result
              */
             afterPasswordCheckSuccess(result) {
+                // success
+                if (result.status) {
 
+                }
+
+                // failed
+                this.$toaster.error('Incorrect password. Please try again.');
+                this.failedTime++;
+            },
+
+            /**
+             * On-Error Handler...
+             * @param err
+             */
+            apiPasswordCheckErrorHandler(err) {
+
+            },
+        },
+        computed: {
+            /**
+             * Accessor to check if we need captcha
+             * @return {boolean}
+             */
+            isNeedCaptcha() {
+                return this.failedTime > SITE_CONFIGS.FAILED_TIMES_SHOW_CAPTCHA;
             }
+        },
+        created() {
+            this.storageKey = CONSTANTS.STORAGE.NOTE_PASS_FAILED_PREFIX + this.noteBaseData.noteKey;
+            this.failedTime = NoteStorage.getStorage().getItem(this.storageKey);
 
+            // parse int time...
+            if (!this.failedTime) {
+                this.failedTime = 0;
+            } else {
+                this.failedTime = parseInt(this.failedTime);
+            }
         }
     }
 </script>

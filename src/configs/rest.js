@@ -15,7 +15,8 @@ const REST_CONFIG = {
     PATH: {
         NOTE_SPACE: {
             CREATE: "/note-space/create",
-            AVAILABILITY: "/note-space/availability/{0}"
+            AVAILABILITY: "/note-space/availability/{0}",
+            VERIFY: "/note-space/password-verify",
         }
     },
 

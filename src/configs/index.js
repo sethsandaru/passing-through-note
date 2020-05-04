@@ -6,6 +6,9 @@
 
 const SITE_CONFIGS = {
     SITE_NAME: "PaTh Note",
+
+    STORAGE_TYPE: sessionStorage,
+    FAILED_TIMES_SHOW_CAPTCHA: 3,
 }
 
 const NAV_TYPES = {
