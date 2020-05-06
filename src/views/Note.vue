@@ -1,6 +1,6 @@
 <template>
     <div v-if="noteBaseData">
-        <NoteComponent v-if="!needPasswordToAccess"></NoteComponent>
+        <NoteComponent v-if="!needPasswordToAccess" :note-data="noteBaseData"></NoteComponent>
         <NoteSpacePassword v-else :noteBaseData="noteBaseData" />
     </div>
 </template>

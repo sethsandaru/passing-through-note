@@ -7,6 +7,12 @@
 <script>
     export default {
         name: "NoteBody",
+        props: {
+            items: {
+                type: Array,
+                default: []
+            }
+        },
         mounted() {
 
         }
