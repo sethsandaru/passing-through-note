@@ -1,12 +1,16 @@
 <template>
     <div class="note-body">
-
+        <NoteItem v-for="noteItemData in items"
+                  :key="noteItemData.id"
+                  :item-data="noteItemData" />
     </div>
 </template>
 
 <script>
+    import NoteItem from "@/components/NoteComponents/NoteItem";
     export default {
         name: "NoteBody",
+        components: {NoteItem},
         props: {
             items: {
                 type: Array,
@@ -14,7 +18,8 @@
             }
         },
         mounted() {
-
+            //TODO: Create drag'n'drop body here
+            //$(this.$el).dragable...
         }
     }
 </script>
