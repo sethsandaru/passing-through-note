@@ -1,5 +1,10 @@
 <template>
     <div id="note-space-body" class="note-space" v-if="noteData">
+        <div>
+            <h1 v-text="noteData.name"></h1>
+            <p v-text="noteData.description"></p>
+        </div>
+        
         <NoteBody :items="noteItems" />
     </div>
 </template>
