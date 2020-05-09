@@ -9,7 +9,9 @@ In the real world, that's how you use the note daily. Simple note helps, simple 
 
 ## Screenshots
 
-In development - coming soon...
+First Look (Gifs) ([Direct Link Here](https://imgur.com/a/NcIxCbK)):
+![Passing Through Note VueJS](https://i.imgur.com/IoE77qC.gif)
+
 
 ## Features
 - Create a Note-Space not only for you but others can visit and take a look too.
