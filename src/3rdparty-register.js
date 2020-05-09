@@ -6,7 +6,9 @@
 
 require('bootstrap/dist/js/bootstrap.bundle');
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'src/assets/css/base.css'
+
+// Register JQuery UI
+import 'jquery-ui'
 
 // Register Toaster.CSS
 import 'v-toaster/dist/v-toaster.css'

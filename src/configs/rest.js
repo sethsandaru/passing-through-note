@@ -26,7 +26,7 @@ const REST_CONFIG = {
     /**
      * Get config value
      * @param path
-     * @param {array} replaceKey
+     * @param {array|string} replaceKey
      */
     get(path, replaceKey) {
         // Replace [] notation with dot notation
@@ -41,6 +41,10 @@ const REST_CONFIG = {
 
         // replace key or not??
         if (apiPath && replaceKey) {
+            if (!replaceKey.forEach) {
+                replaceKey = [replaceKey];
+            }
+
             replaceKey.forEach((itemData, index) => apiPath = apiPath.replace(`{${index}}`, itemData));
         }
 

@@ -1,18 +1,24 @@
 <template>
     <div class="full-body-container">
-        <h1 v-text="noteBaseData.name"></h1>
+        <div class="note-info-block">
+            <h1 v-text="noteBaseData.name"></h1>
+            <p class="note-desc" v-text="noteBaseData.description"></p>
 
-        <p>Please enter the password to continue</p>
-
-        <div class="form-group">
-            <input type="password" class="form-control" v-model="password" @keyup.enter="submitPassword">
+            <hr>
         </div>
+        <div class="container-lg">
+            <p>Please enter the password to continue</p>
 
-        <button class="btn btn-primary"
-                @click="submitPassword"
-                :disabled="isChecking">
-            Access
-        </button>
+            <div class="form-group">
+                <input type="password" class="form-control" v-model="password" @keyup.enter="submitPassword">
+            </div>
+
+            <button class="btn btn-primary"
+                    @click="submitPassword"
+                    :disabled="isChecking">
+                Access
+            </button>
+        </div>
     </div>
 </template>
 

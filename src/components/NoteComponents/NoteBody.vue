@@ -8,6 +8,7 @@
 
 <script>
     import NoteItem from "@/components/NoteComponents/NoteItem";
+
     export default {
         name: "NoteBody",
         components: {NoteItem},
@@ -17,9 +18,12 @@
                 default: []
             }
         },
+        data: () => ({
+            dragging: false,
+        }),
+        methods: {
+        },
         mounted() {
-            //TODO: Create drag'n'drop body here
-            //$(this.$el).dragable...
         }
     }
 </script>
@@ -29,5 +33,6 @@
         display: flex;
         flex: 1;
         position: relative;
+        min-height: 80vh;
     }
 </style>

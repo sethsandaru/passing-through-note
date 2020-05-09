@@ -1,6 +1,6 @@
 <template>
-    <div id="app">
-        <Navigation></Navigation>
+    <div id="app" @click="globalBodyClick">
+        <Navigation :type="navbarType"></Navigation>
 
         <transition :name="transitionName">
             <router-view></router-view>
@@ -13,17 +13,22 @@
             </div>
             <!-- Copyright -->
         </footer>
+
+        <div class="loading" style='display: none;'></div>
     </div>
 </template>
 
 <script>
     import Navigation from "./views/Navigation";
+    import {NAV_TYPES} from "@/configs";
+    import {HOOKS} from "@/libraries/PathInternalHook";
 
     export default {
         components: {Navigation},
         data() {
             return {
-                transitionName: "fade"
+                transitionName: "fade",
+                navbarType: NAV_TYPES.NORMAL_VIEW
             }
         },
         watch: {
@@ -31,6 +36,19 @@
                 const toDepth = to.path.split('/').length
                 const fromDepth = from.path.split('/').length
                 this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+
+                if (to.path.indexOf('/note/') >= 0) {
+                    this.navbarType = NAV_TYPES.NOTE_VIEW
+                }
+            }
+        },
+        methods: {
+            /**
+             * HOOKING ROCKING HOPPER
+             * @param {Event} e
+             */
+            globalBodyClick(e) {
+                HOOKS.GLOBAL_BODY_CLICK.run(this, e, this.$el)
             }
         }
     }

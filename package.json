@@ -13,10 +13,13 @@
     "url": "https://github.com/sethsandaru/passing-through-note"
   },
   "dependencies": {
+    "@primer/octicons": "^9.6.0",
     "bootstrap": "^4.4.1",
     "core-js": "^2.6.5",
     "jquery": "^3.5.0",
+    "jquery-ui": "^1.12.1",
     "popper.js": "^1.16.1",
+    "remove": "^0.1.5",
     "v-toaster": "^1.0.3",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",

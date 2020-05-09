@@ -1,10 +1,12 @@
 <template>
     <div id="note-space-body" class="note-space" v-if="noteData">
-        <div>
+        <div class="note-info-block">
             <h1 v-text="noteData.name"></h1>
             <p v-text="noteData.description"></p>
+
+            <hr>
         </div>
-        
+
         <NoteBody :items="noteItems" />
     </div>
 </template>
@@ -12,6 +14,10 @@
 <script>
     import NoteBody from "@/components/NoteComponents/NoteBody";
     import {REST_CONFIG} from "@/configs/rest";
+
+    /**
+     * @property {NoteSpacePermissionResultInterface} noteData
+     */
     export default {
         name: "NoteComponent",
         components: {NoteBody},
@@ -53,5 +59,11 @@
         display: flex;
         flex-direction: column;
         font-size: 14px;
+        background-color: #FAACA8;
+        background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%);
+    }
+
+    h1 {
+        padding-left: 0;
     }
 </style>

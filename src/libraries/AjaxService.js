@@ -4,6 +4,7 @@
  * @author Phat Tran
  */
 import {REST_CONFIG} from "@/configs/rest";
+import {hideLoading, showLoading} from "@/extendables/loading-plugin";
 
 const AjaxService = {};
 
@@ -51,12 +52,22 @@ const prepareAjax = function (
         modifiedURL = appendUrl;
     }
 
+    // automatically show loading before send AjaxRequest
+    showLoading();
+
     return fetch(modifiedURL, {
         method,
         body: data,
         ...ajaxOptions
-    }).then(result => result.json())
-        .catch(ajaxOptions.onError || (e => console.error("FetchAPI-Error", e)));
+    }).then(result => {
+        hideLoading();
+        return result.json();
+    }).catch(
+        ajaxOptions.onError || (e => {
+            console.error("FetchAPI-Error", e)
+            hideLoading()
+        })
+    );
 };
 
 /**

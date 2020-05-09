@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark nav-note-bg">
-        <router-link :to="homePageRoute"
+        <router-link :to="getRoute('home')"
                      class="navbar-brand"
                      v-text="siteConfig.SITE_NAME">
         </router-link>
@@ -12,16 +12,10 @@
         <div class="collapse navbar-collapse" id="navbarNavHomePage">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#">Your Note <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
+                    <a class="nav-link" href="#">This item is coming soon</a>
                 </li>
             </ul>
         </div>

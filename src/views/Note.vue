@@ -1,7 +1,11 @@
 <template>
     <div v-if="noteBaseData">
-        <NoteComponent v-if="!needPasswordToAccess" :note-data="noteBaseData"></NoteComponent>
-        <NoteSpacePassword v-else :noteBaseData="noteBaseData" />
+        <NoteComponent v-if="needPasswordToAccess === false"
+                       :note-data="noteBaseData"
+        />
+        <NoteSpacePassword v-else
+                           :noteBaseData="noteBaseData"
+        />
     </div>
 </template>
 
@@ -36,7 +40,9 @@
              */
             afterGotNote(result) {
                 this.noteBaseData = result.object;
-
+                this.$setTitle(
+                    this.noteBaseData.name
+                );
                 this.permissionCheck();
             },
             /**
@@ -56,6 +62,7 @@
                 // First-rule
                 if (this.noteBaseData.visitorCanView) {
                     this.needPasswordToAccess = false;
+                    return;
                 }
 
                 // Second-Rule => need password to access
@@ -74,6 +81,9 @@
 
             this.noteKey = this.$route.params.noteId
             this.getNote()
+            this.$setTitle(
+                'Accessing Note-Space'//this.__('homeTitle')
+            );
         }
     }
 </script>

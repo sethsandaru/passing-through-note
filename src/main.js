@@ -5,7 +5,8 @@ import store from './store'
 import {} from './extendables'
 
 // Main styling...
-import('3rdparty-register')
+import('./3rdparty-register')
+import('./assets/css/base.css');
 
 Vue.config.productionTip = false
 
