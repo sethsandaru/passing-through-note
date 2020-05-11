@@ -13,7 +13,8 @@
 
 <script>
     import $ from 'jquery'
-    import dragable from 'jquery-ui/ui/widgets/draggable'
+    import draggable from 'jquery-ui/ui/widgets/draggable'
+    import resizable from 'jquery-ui/ui/widgets/resizable'
     import {OctIconFactory} from "@/libraries/OctIcon";
     import {NOTE_ITEM_COLORS} from "@/configs/note-item-color";
     import NoteItemHeaderControl from "@/components/NoteComponents/NoteItemHeaderControl";
@@ -59,20 +60,48 @@
             }
         },
         methods: {
+            /**
+             * After JQuery-Dragged Event
+             */
             afterPositioned(e, jUi) {
                 const position = jUi.position;
 
                 // re-update - position
                 this.itemData.top = position.top;
                 this.itemData.left = position.left;
+
+                this.submitChanges(position)
             },
 
+            /**
+             * After JQuery-Resized Event
+             */
+            afterResized(e, jUi) {
+                const noteNewSize = jUi.size;
+
+                // update new size
+                this.itemData.width = noteNewSize.width;
+                this.itemData.height = noteNewSize.height;
+
+                this.submitChanges(noteNewSize)
+            },
+
+            /**
+             * Send changes to API to update the note-items
+             * @param noteObject
+             */
             submitChanges(noteObject = null) {
                 let data = noteObject || this.itemData;
 
                 // send ajax here
+                console.log(noteObject)
             },
 
+            /**
+             * Get Icon as SVG HTML
+             * @param name icon name
+             * @returns {String}
+             */
             getIcon(name) {
                 return OctIconFactory.getSVG(name)
             },
@@ -80,16 +109,24 @@
 
         },
         mounted() {
+            // Create Draggable and Resizable Instance
             $(this.$el).draggable({
                 handle: '.note-toolbox',
                 containment: "parent",
                 scroll: false,
                 zIndex: 9999,
                 stop: this.afterPositioned
+            }).resizable({
+                containment: "parent",
+                minHeight: 150,
+                minWidth: 250,
+                stop: this.afterResized
             })
         },
         beforeDestroy() {
-            $(this.$el).draggable("destroy"); // destroy save ram
+            $(this.$el)
+                .draggable("destroy")
+                .resizable("destroy"); // destroy save ram
         }
     }
 </script>
