@@ -32,7 +32,8 @@ const prepareAjax = function (
             'Accept': 'application/json;charset=utf-8'
         },
         redirect: 'follow',
-        referrerPolicy: 'no-referrer'
+        referrerPolicy: 'no-referrer',
+        showLoading: true
     };
     Object.assign(ajaxOptions, options);
 
@@ -53,19 +54,27 @@ const prepareAjax = function (
     }
 
     // automatically show loading before send AjaxRequest
-    showLoading();
+    if (options.showLoading) {
+        showLoading()
+    }
 
     return fetch(modifiedURL, {
         method,
         body: data,
         ...ajaxOptions
-    }).then(result => {
+    }).then(response => {
         hideLoading();
-        return result.json();
+
+        if (response.status === 200) { // Or what ever you want to check
+            return Promise.resolve(response.json()); // This will end up in SUCCESS part
+        }
+
+        return Promise.resolve(response.json()).then((responseInJson) => {
+            return Promise.reject(responseInJson.message);
+        });
     }).catch(
         ajaxOptions.onError || (e => {
             console.error("FetchAPI-Error", e)
-            hideLoading()
         })
     );
 };

@@ -18,6 +18,7 @@
     import {OctIconFactory} from "@/libraries/OctIcon";
     import {NOTE_ITEM_COLORS} from "@/configs/note-item-color";
     import NoteItemHeaderControl from "@/components/NoteComponents/NoteItemHeaderControl";
+    import {REST_CONFIG} from "@/configs/rest";
 
     /**
      * Model properties
@@ -65,11 +66,6 @@
              */
             afterPositioned(e, jUi) {
                 const position = jUi.position;
-
-                // re-update - position
-                this.itemData.top = position.top;
-                this.itemData.left = position.left;
-
                 this.submitChanges(position)
             },
 
@@ -78,11 +74,6 @@
              */
             afterResized(e, jUi) {
                 const noteNewSize = jUi.size;
-
-                // update new size
-                this.itemData.width = noteNewSize.width;
-                this.itemData.height = noteNewSize.height;
-
                 this.submitChanges(noteNewSize)
             },
 
@@ -94,7 +85,27 @@
                 let data = noteObject || this.itemData;
 
                 // send ajax here
-                console.log(noteObject)
+                this.$ajax.put(
+                    REST_CONFIG.get('NOTE_ITEMS.UPDATE', [this.itemData.id]),
+                    data
+                )
+                .then(this.afterChanged)
+                .catch(this.failedChange)
+            },
+
+            afterChanged(resultData) {
+                if (!resultData.status) {
+                    this.$toaster.error("Failed to update your note. Please try again.")
+                    return
+                }
+
+                // apply the changes
+                Object.assign(this.itemData, resultData.updatedupdatedData)
+                this.$toaster.error("Note-Item updated!")
+            },
+
+            failedChange(errMessage) {
+                this.$toaster.error(errMessage)
             },
 
             /**

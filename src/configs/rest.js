@@ -19,7 +19,8 @@ const REST_CONFIG = {
             VERIFY: "/note-space/verify-passwor",
         },
         NOTE_ITEMS: {
-            GET: "/note-items/list/{0}"
+            GET: "/note-items/list/{0}",
+            UPDATE: "/note-items/update/{0}"
         }
     },
 
