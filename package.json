@@ -20,9 +20,11 @@
     "jquery-ui": "^1.12.1",
     "popper.js": "^1.16.1",
     "remove": "^0.1.5",
+    "socket.io-client": "^2.3.0",
     "v-toaster": "^1.0.3",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
+    "vue-socket.io": "^3.0.9",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
