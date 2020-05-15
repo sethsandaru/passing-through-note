@@ -46,8 +46,20 @@
                 this.noteItems = apiResult;
             }
         },
+        created() {
+              
+        },
         mounted() {
             this.retrieveNoteItems()
+        },
+        sockets: {
+            connect: function () {
+                console.log('socket connected')
+            },
+
+            noteSpaceJoined: function () {
+                console.log('JOINED ROOM')
+            },
         }
     }
 </script>
