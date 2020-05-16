@@ -19,8 +19,6 @@ import socketio from 'socket.io-client';
 import VueSocketIO from 'vue-socket.io';
 import {REST_CONFIG} from "@/configs/rest";
 
-export const SocketInstance = socketio(REST_CONFIG.BASE_URL);
-
 /**
  * Register here
  */
@@ -30,7 +28,10 @@ Vue.use(AjaxPlugin); // Added by Phat Tran
 Vue.use(TopBarPlugin); // Added by Phat Tran
 Vue.use(Toaster); // Added by Phat Tran
 Vue.use(LoadingPlugin); // Added by Phat Tran
-Vue.use(VueSocketIO, SocketInstance)  // Added by Phat Tran
+Vue.use(new VueSocketIO({
+    debug: REST_CONFIG.DEBUG,
+    connection: socketio(REST_CONFIG.BASE_URL)
+}))  // Added by Phat Tran
 
 
 // Please make sure to keep a newline after injected a new plugin

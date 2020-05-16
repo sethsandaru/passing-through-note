@@ -1,8 +1,17 @@
 <template>
     <div id="note-space-body" class="note-space" v-if="noteData">
         <div class="note-info-block">
-            <h1 v-text="noteData.name"></h1>
-            <p v-text="noteData.description"></p>
+            <div class="row">
+                <div class="col-md 6">
+                    <h1 v-text="noteData.name"></h1>
+                    <p v-text="noteData.description"></p>
+                </div>
+                <div class="col-md 6 text-right">
+                    <button class="btn btn-primary" @click="createNewBlankNote">
+                        + Note Item
+                    </button>
+                </div>
+            </div>
 
             <hr>
         </div>
@@ -14,6 +23,7 @@
 <script>
     import NoteBody from "@/components/NoteComponents/NoteBody";
     import {REST_CONFIG} from "@/configs/rest";
+    import {SOCKET_EMIT_CONSTANT} from "@/configs/socket-contant";
 
     /**
      * @property {NoteSpacePermissionResultInterface} noteData
@@ -44,21 +54,52 @@
              */
             afterRetrievedNotes(apiResult) {
                 this.noteItems = apiResult;
-            }
-        },
-        created() {
-              
-        },
-        mounted() {
-            this.retrieveNoteItems()
-        },
-        sockets: {
-            connect: function () {
-                console.log('socket connected')
             },
 
-            noteSpaceJoined: function () {
-                console.log('JOINED ROOM')
+            /**
+             * Create new blank note through socket
+             */
+            createNewBlankNote() {
+                this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.CREATE, {
+                    noteSpaceId: this.noteData.id
+                })
+            },
+
+            /**
+             * Socket-After handler of Added New Note Item
+             * @param {Object} resultData
+             * @param {Object|null} resultData.data
+             * @param {Boolean} resultData.status
+             */
+            afterAddedNote(resultData) {
+                if (!resultData.status) {
+                    this.$toaster.error("Error while adding a new note item. Please try again.");
+                    return
+                }
+
+                this.noteItems.push(resultData.data)
+            },
+        },
+        created() {
+            this.$socket.emit(
+                SOCKET_EMIT_CONSTANT.NOTE_SPACE.ACCESS,
+                {noteSpaceId: this.noteData.id}
+            )
+        },
+        mounted() {
+            // this.retrieveNoteItems()
+        },
+        sockets: {
+            noteSpaceJoined: function (data) {
+                // if (data.noteSpaceId !== this.noteData.id) {
+                //     return
+                // }
+
+                this.noteItems = data.noteItems || []
+            },
+
+            noteItemAdded(data) {
+                this.afterAddedNote(data);
             },
         }
     }

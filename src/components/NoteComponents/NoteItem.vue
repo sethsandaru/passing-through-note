@@ -1,12 +1,13 @@
 <template>
-    <div class="note-item" :style="{noteCoordinate, ...noteMappedColour}">
+    <div class="note-item" :style="noteItemStyles">
         <div class="note-toolbox text-right" contenteditable="false">
             <span class="toolbox-item" v-html="getIcon('list-unordered')"></span>
             <span class="toolbox-item" v-html="getIcon('trashcan')"></span>
         </div>
 
         <NoteItemHeaderControl :headline="itemData.headline"
-                               v-model="itemData.headline" />
+                               v-model="itemData.headline"
+                               @updateHeadline="submitChanges" />
         <div class="content" v-html="itemData.content"></div>
     </div>
 </template>
@@ -39,13 +40,16 @@
         },
         computed: {
             topPosition() {
-                return this.itemData.top;
+                return this.itemData.top + "px";
             },
 
             leftPosition() {
-                return this.itemData.left;
+                return this.itemData.left + "px";
             },
 
+            /**
+             * Note-Item Coord (TOP-LEFT). Styling
+             */
             noteCoordinate() {
                 return {
                     'top': this.topPosition,
@@ -53,11 +57,21 @@
                 }
             },
 
+            /**
+             * Note-Item Colour Setting
+             */
             noteMappedColour() {
                 return {
                     '--body-color': NOTE_ITEM_COLORS[this.itemData.color].body,
                     '--toolbar-color': NOTE_ITEM_COLORS[this.itemData.color].toolbar,
                 }
+            },
+
+            noteItemStyles() {
+                let finalStyle = {};
+                Object.assign(finalStyle, this.noteMappedColour)
+                Object.assign(finalStyle, this.noteCoordinate)
+                return finalStyle
             }
         },
         methods: {
@@ -83,14 +97,10 @@
              */
             submitChanges(noteObject = null) {
                 let data = noteObject || this.itemData;
+                data.id = this.itemData.id;
+                data.noteSpaceId = this.itemData.noteSpaceId;
 
-                // send ajax here
-                this.$ajax.put(
-                    REST_CONFIG.get('NOTE_ITEMS.UPDATE', [this.itemData.id]),
-                    data
-                )
-                .then(this.afterChanged)
-                .catch(this.failedChange)
+                this.$socket.emit("update-note-item", data);
             },
 
             afterChanged(resultData) {
@@ -99,9 +109,13 @@
                     return
                 }
 
+                if (resultData.updatedData.id !== this.itemData.id) {
+                    return
+                }
+
                 // apply the changes
-                Object.assign(this.itemData, resultData.updatedupdatedData)
-                this.$toaster.error("Note-Item updated!")
+                Object.assign(this.itemData, resultData.updatedData)
+                this.$toaster.success("Note-Item updated!")
             },
 
             failedChange(errMessage) {
@@ -138,6 +152,11 @@
             $(this.$el)
                 .draggable("destroy")
                 .resizable("destroy"); // destroy save ram
+        },
+        sockets: {
+            noteItemUpdated(data) {
+                this.afterChanged(data)
+            },
         }
     }
 </script>

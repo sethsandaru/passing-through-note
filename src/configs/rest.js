@@ -11,6 +11,7 @@ import PROD_REST from './rest.prod'
  */
 const REST_CONFIG = {
     BASE_URL: "",
+    DEBUG: false,
 
     PATH: {
         NOTE_SPACE: {

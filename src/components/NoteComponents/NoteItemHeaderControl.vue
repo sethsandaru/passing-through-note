@@ -85,10 +85,12 @@
 
                 // change to parent-component
                 this.$emit('change', this.newHeadline)
-                this.cancelEditState()
 
-                //TODO: send ajax request here...
-                // this.$ajax....
+                // call to parent and let them do the websocket update
+                this.$emit('updateHeadline', {headline: this.newHeadline})
+
+                // remove cancel state
+                this.cancelEditState()
             }
         },
         computed: {

@@ -4,5 +4,6 @@
  ********************************/
 
 export default {
-    BASE_URL: "https://sethphat.com:3000"
+    BASE_URL: "https://sethphat.com:3000",
+    DEBUG: false
 }
