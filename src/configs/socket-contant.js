@@ -7,6 +7,7 @@ const SOCKET_EMIT_CONSTANT = {
     NOTE_ITEM: {
         CREATE: "create-note-item",
         UPDATE: "update-note-item",
+        DELETE: "delete-note-item",
     }
 };
 

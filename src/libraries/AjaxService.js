@@ -58,9 +58,12 @@ const prepareAjax = function (
         showLoading()
     }
 
+    if (method !== "GET") {
+        ajaxOptions.body = data;
+    }
+
     return fetch(modifiedURL, {
         method,
-        body: data,
         ...ajaxOptions
     }).then(response => {
         hideLoading();

@@ -2,7 +2,7 @@
     <div class="note-item" :style="noteItemStyles">
         <div class="note-toolbox text-right" contenteditable="false">
             <span class="toolbox-item" v-html="getIcon('list-unordered')"></span>
-            <span class="toolbox-item" v-html="getIcon('trashcan')"></span>
+            <span class="toolbox-item" v-html="getIcon('trashcan')" @click="deleteNoteItem"></span>
         </div>
 
         <NoteItemHeaderControl :headline="itemData.headline"
@@ -20,6 +20,7 @@
     import {NOTE_ITEM_COLORS} from "@/configs/note-item-color";
     import NoteItemHeaderControl from "@/components/NoteComponents/NoteItemHeaderControl";
     import {REST_CONFIG} from "@/configs/rest";
+    import {SOCKET_EMIT_CONSTANT} from "@/configs/socket-contant";
 
     /**
      * Model properties
@@ -57,6 +58,13 @@
                 }
             },
 
+            noteSize() {
+                return {
+                    'width': this.itemData.width + "px",
+                    'height': this.itemData.height + "px"
+                }
+            },
+
             /**
              * Note-Item Colour Setting
              */
@@ -71,6 +79,7 @@
                 let finalStyle = {};
                 Object.assign(finalStyle, this.noteMappedColour)
                 Object.assign(finalStyle, this.noteCoordinate)
+                Object.assign(finalStyle, this.noteSize)
                 return finalStyle
             }
         },
@@ -100,7 +109,7 @@
                 data.id = this.itemData.id;
                 data.noteSpaceId = this.itemData.noteSpaceId;
 
-                this.$socket.emit("update-note-item", data);
+                this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.UPDATE, data);
             },
 
             afterChanged(resultData) {
@@ -115,7 +124,6 @@
 
                 // apply the changes
                 Object.assign(this.itemData, resultData.updatedData)
-                this.$toaster.success("Note-Item updated!")
             },
 
             failedChange(errMessage) {
@@ -131,6 +139,15 @@
                 return OctIconFactory.getSVG(name)
             },
 
+            /**
+             * Trigger to delete note item
+             */
+            deleteNoteItem() {
+                this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.UPDATE, {
+                    noteSpaceId: this.itemData.noteSpaceId,
+                    id: this.itemData.id
+                });
+            },
 
         },
         mounted() {
@@ -156,6 +173,10 @@
         sockets: {
             noteItemUpdated(data) {
                 this.afterChanged(data)
+            },
+
+            noteItemDeleted(data) {
+
             },
         }
     }

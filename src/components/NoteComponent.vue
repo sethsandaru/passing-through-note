@@ -101,6 +101,13 @@
             noteItemAdded(data) {
                 this.afterAddedNote(data);
             },
+        },
+
+        beforeDestroy() {
+            // leave room before leave...
+            this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_SPACE.LEAVE, {
+                noteSpaceId: this.noteData.id
+            })
         }
     }
 </script>
