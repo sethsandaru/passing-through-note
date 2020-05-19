@@ -8,7 +8,9 @@
         <NoteItemHeaderControl :headline="itemData.headline"
                                v-model="itemData.headline"
                                @updateHeadline="submitChanges" />
-        <div class="content" v-html="itemData.content"></div>
+        <NoteContentControl class="content"
+                            v-model="itemData.content"
+                            @updateContent="submitChanges" />
     </div>
 </template>
 
@@ -21,6 +23,7 @@
     import NoteItemHeaderControl from "@/components/NoteComponents/NoteItemHeaderControl";
     import {REST_CONFIG} from "@/configs/rest";
     import {SOCKET_EMIT_CONSTANT} from "@/configs/socket-contant";
+    import NoteContentControl from "@/components/NoteComponents/NoteContentControl";
 
     /**
      * Model properties
@@ -35,7 +38,7 @@
      */
     export default {
         name: "NoteItem",
-        components: {NoteItemHeaderControl},
+        components: {NoteContentControl, NoteItemHeaderControl},
         props: {
             itemData: Object
         },

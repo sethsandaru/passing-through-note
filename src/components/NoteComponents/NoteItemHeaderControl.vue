@@ -15,7 +15,7 @@
                    @keypress.esc="cancel">
 
             <div class="icon">
-                <span class="icon-cancel" @click="cancelEditState" v-html="cancelIcon"></span>
+                <span class="icon-cancel" @click="cancel" v-html="cancelIcon"></span>
                 <span class="icon-submit" @click="submitChange" v-html="submitIcon"></span>
             </div>
         </div>
@@ -28,52 +28,21 @@
     import {HookItem} from "@/classes/HookItem";
     import {HOOKS} from "@/libraries/PathInternalHook";
     import {HELPER} from "@/libraries/Helper";
+    import {DBL_CONTROL_MIXINS} from "@/extendables/dblControlMixins";
 
     export default {
         name: "NoteItemHeaderControl",
-        props: {
-            value: String
-        },
+        mixins: [DBL_CONTROL_MIXINS],
         data: () => ({
-            isEditing: false,
             newHeadline: "",
-            uniqueId: HELPER.getUUIDv4()
         }),
-        model: {
-            event: 'change',
-            prop: 'value'
-        },
         methods: {
-            setEditState() {
-                this.isEditing = true
-                $("#app").addClass(this.bodyEditClass)
-            },
-
             updateValue(newHeadline) {
                 this.newHeadline = newHeadline;
             },
 
-            cancelEditState() {
-                this.isEditing = false;
+            cancel() {
                 this.newHeadline = this.value
-                $("#app").removeClass(this.bodyEditClass)
-            },
-
-            /**
-             * With this method, we will handle:
-             *  - Click outside of the note control item => End
-             */
-            clickOutOfTheBoxHandle(e, $appEl) {
-                if (!this.isEditing || !$($appEl).hasClass(this.bodyEditClass)) {
-                    return
-                }
-
-                // still in the input => no need close
-                if ($(e.target).parents('.note-headline-control').length) {
-                    return
-                }
-
-                // eligible to close.
                 this.cancelEditState()
             },
 
@@ -100,16 +69,8 @@
             cancelIcon() {
                 return OctIconFactory.getSVG('x')
             },
-
-            bodyEditClass() {
-                return `is-edit-${this.uniqueId}`
-            }
         },
         created() {
-            // inject the hook hohohoho
-            let itemHeaderControlHookItem = new HookItem(this.clickOutOfTheBoxHandle)
-            HOOKS.GLOBAL_BODY_CLICK.add(itemHeaderControlHookItem)
-
             this.newHeadline = this.value
         }
     }
