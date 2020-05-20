@@ -6,6 +6,8 @@
 
 import {HELPER} from "@/libraries/Helper";
 import {HOOKS} from "@/libraries/PathInternalHook";
+import $ from 'jquery'
+import {HookItem} from "@/classes/HookItem";
 
 const DBL_CONTROL_MIXINS = {
     props: {
@@ -28,6 +30,10 @@ const DBL_CONTROL_MIXINS = {
         cancelEditState() {
             this.isEditing = false;
             $("#app").removeClass(this.bodyEditClass)
+
+            if (typeof this.afterCancelledEditState === 'function') {
+                this.afterCancelledEditState();
+            }
         },
 
         /**
@@ -40,7 +46,7 @@ const DBL_CONTROL_MIXINS = {
             }
 
             // still in the input => no need close
-            if ($(e.target).parents('.note-headline-control').length) {
+            if ($(e.target).parents('[data-note-id]').length) {
                 return
             }
 

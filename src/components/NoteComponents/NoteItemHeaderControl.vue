@@ -12,7 +12,7 @@
                    :value="value"
                    @input="updateValue($event.target.value)"
                    @keypress.enter="submitChange"
-                   @keypress.esc="cancel">
+                   @keyup.esc="cancel">
 
             <div class="icon">
                 <span class="icon-cancel" @click="cancel" v-html="cancelIcon"></span>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-    import $ from 'jquery'
     import {OctIconFactory} from "@/libraries/OctIcon";
     import {HookItem} from "@/classes/HookItem";
     import {HOOKS} from "@/libraries/PathInternalHook";

@@ -5,11 +5,12 @@
             <span class="toolbox-item" v-html="getIcon('trashcan')" @click="deleteNoteItem"></span>
         </div>
 
-        <NoteItemHeaderControl :headline="itemData.headline"
-                               v-model="itemData.headline"
+        <NoteItemHeaderControl :headline="value.headline"
+                               v-model="value.headline"
                                @updateHeadline="submitChanges" />
         <NoteContentControl class="content"
-                            v-model="itemData.content"
+                            v-model="value.content"
+                            :note-item-height="value.height"
                             @updateContent="submitChanges" />
     </div>
 </template>
@@ -27,28 +28,32 @@
 
     /**
      * Model properties
-     * @property {Object} itemData
-     * @property {Number} itemData.id
-     * @property {Number} itemData.top
-     * @property {Number} itemData.right
-     * @property {String} itemData.headline
-     * @property {String} itemData.content
-     * @property {String} itemData.createdDate
-     * @property {Boolean} itemData.isRichContent
+     * @property {Object} value
+     * @property {Number} value.id
+     * @property {Number} value.top
+     * @property {Number} value.right
+     * @property {String} value.headline
+     * @property {String} value.content
+     * @property {String} value.createdDate
+     * @property {Boolean} value.isRichContent
      */
     export default {
         name: "NoteItem",
         components: {NoteContentControl, NoteItemHeaderControl},
         props: {
-            itemData: Object
+            value: {
+                type: Object,
+                required: true
+            },
+            index: Number
         },
         computed: {
             topPosition() {
-                return this.itemData.top + "px";
+                return this.value.top + "px";
             },
 
             leftPosition() {
-                return this.itemData.left + "px";
+                return this.value.left + "px";
             },
 
             /**
@@ -63,8 +68,8 @@
 
             noteSize() {
                 return {
-                    'width': this.itemData.width + "px",
-                    'height': this.itemData.height + "px"
+                    'width': this.value.width + "px",
+                    'height': this.value.height + "px"
                 }
             },
 
@@ -73,8 +78,8 @@
              */
             noteMappedColour() {
                 return {
-                    '--body-color': NOTE_ITEM_COLORS[this.itemData.color].body,
-                    '--toolbar-color': NOTE_ITEM_COLORS[this.itemData.color].toolbar,
+                    '--body-color': NOTE_ITEM_COLORS[this.value.color].body,
+                    '--toolbar-color': NOTE_ITEM_COLORS[this.value.color].toolbar,
                 }
             },
 
@@ -108,11 +113,15 @@
              * @param noteObject
              */
             submitChanges(noteObject = null) {
-                let data = noteObject || this.itemData;
-                data.id = this.itemData.id;
-                data.noteSpaceId = this.itemData.noteSpaceId;
+                let data = noteObject || this.value;
+                data.id = this.value.id;
+                data.noteSpaceId = this.value.noteSpaceId;
 
                 this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.UPDATE, data);
+
+                // re-append and update data
+                let newObj = Object.assign({}, this.value, data)
+                this.$emit('change', this.index, newObj)
             },
 
             afterChanged(resultData) {
@@ -126,7 +135,8 @@
                 }
 
                 // apply the changes
-                Object.assign(this.itemData, resultData.updatedData)
+                let newObj = Object.assign({}, this.value, resultData.updatedData)
+                this.$emit('change', this.index, newObj)
             },
 
             failedChange(errMessage) {
@@ -146,10 +156,19 @@
              * Trigger to delete note item
              */
             deleteNoteItem() {
-                this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.UPDATE, {
-                    noteSpaceId: this.itemData.noteSpaceId,
-                    id: this.itemData.id
-                });
+                if (!confirm(`Are you sure to delete ${this.itemData.headline} note-item?`)) {
+                    return
+                }
+
+                let deleteNoteData = {
+                    noteSpaceId: this.value.noteSpaceId,
+                    id: this.value.id
+                }
+
+                this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.DELETE, deleteNoteData);
+
+                // delete too in this current user
+                this.$emit('deletedNote', deleteNoteData);
             },
 
         },
@@ -179,7 +198,7 @@
             },
 
             noteItemDeleted(data) {
-
+                this.$emit('deletedNote', data);
             },
         }
     }

@@ -16,7 +16,9 @@
             <hr>
         </div>
 
-        <NoteBody :items="noteItems" />
+        <NoteBody :items="noteItems"
+                  @change="updatedNoteItem"
+                  @delete="deletedNoteItem" />
     </div>
 </template>
 
@@ -38,24 +40,6 @@
             noteItems: [],
         }),
         methods: {
-            /**
-             * Send Ajax Request to get Note-Items
-             * Fire at mounted
-             */
-            retrieveNoteItems() {
-                this.$ajax.get(
-                    REST_CONFIG.get('NOTE_ITEMS.GET', this.noteData.id)
-                ).then(this.afterRetrievedNotes)
-            },
-
-            /**
-             * After-Ajax-Note-Items - Result-success
-             * @param {Array} apiResult
-             */
-            afterRetrievedNotes(apiResult) {
-                this.noteItems = apiResult;
-            },
-
             /**
              * Create new blank note through socket
              */
@@ -79,6 +63,29 @@
 
                 this.noteItems.push(resultData.data)
             },
+
+            /**
+             * Emitting from Children - To update Note-Item
+             * @param index
+             * @param noteData
+             */
+            updatedNoteItem(index, noteData) {
+                this.$set(this.noteItems, index, noteData);
+            },
+
+            /**
+             * Emitting from Children - To delete Note-Item
+             * @param {Number} id Note-Item-ID
+             */
+            deletedNoteItem(id) {
+                // lol remove by id @@
+                for (let i = 0; i < this.items.length; i++) {
+                    if (this.noteItems[i].id === id) {
+                        this.noteItems.splice(i, 1);
+                        return;
+                    }
+                }
+            }
         },
         created() {
             this.$socket.emit(
@@ -91,10 +98,6 @@
         },
         sockets: {
             noteSpaceJoined: function (data) {
-                // if (data.noteSpaceId !== this.noteData.id) {
-                //     return
-                // }
-
                 this.noteItems = data.noteItems || []
             },
 

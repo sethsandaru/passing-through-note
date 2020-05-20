@@ -1,8 +1,11 @@
 <template>
     <div class="note-body">
-        <NoteItem v-for="noteItemData in items"
+        <NoteItem v-for="(noteItemData, index) in items"
                   :key="noteItemData.id"
-                  :item-data="noteItemData" />
+                  :value="noteItemData"
+                  :index="index"
+                  @change="updatedNoteItem"
+                  @deletedNote="afterDeletedItem" />
     </div>
 </template>
 
@@ -22,6 +25,12 @@
             dragging: false,
         }),
         methods: {
+            updatedNoteItem(index, noteItemData) {
+                this.$emit('change', index, noteItemData)
+            },
+            afterDeletedItem(data) {
+                this.$emit('delete', data.id)
+            }
         },
         mounted() {
         }

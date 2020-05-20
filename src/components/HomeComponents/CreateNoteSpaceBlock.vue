@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Create your OWN Note-Space and use it now</h2>
+        <h3>Create your OWN Note-Space and NOTE yours now</h3>
 
         <div class="form-group">
             <label>Your Email</label>
