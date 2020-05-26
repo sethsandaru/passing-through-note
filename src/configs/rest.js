@@ -21,7 +21,8 @@ const REST_CONFIG = {
         },
         NOTE_ITEMS: {
             GET: "/note-items/list/{0}",
-            UPDATE: "/note-items/update/{0}"
+            UPDATE: "/note-items/update/{0}",
+            CREATE_BLANK: "/note-items/create?note-space-id={0}"
         }
     },
 

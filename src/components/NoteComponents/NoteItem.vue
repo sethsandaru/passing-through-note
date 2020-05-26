@@ -1,8 +1,21 @@
 <template>
     <div class="note-item" :style="noteItemStyles">
-        <div class="note-toolbox text-right" contenteditable="false">
-            <span class="toolbox-item" v-html="getIcon('list-unordered')"></span>
-            <span class="toolbox-item" v-html="getIcon('trashcan')" @click="deleteNoteItem"></span>
+        <div class="note-toolbox" contenteditable="false">
+            <div class="float-left">
+                <span class="toolbox-item drag-item"
+                      v-html="getIcon('arrow-both')">
+                </span>
+            </div>
+
+            <div class="text-right">
+                <span class="toolbox-item"
+                      v-html="getIcon('list-unordered')"
+                      @click="showOptions"></span>
+
+                <span class="toolbox-item"
+                      v-html="getIcon('trashcan')"
+                      @click="deleteNoteItem"></span>
+            </div>
         </div>
 
         <NoteItemHeaderControl :headline="value.headline"
@@ -12,6 +25,9 @@
                             v-model="value.content"
                             :note-item-height="value.height"
                             @updateContent="submitChanges" />
+
+        <NoteItemOptionList @dropdown="afterOptionCreated" />
+
     </div>
 </template>
 
@@ -25,6 +41,7 @@
     import {REST_CONFIG} from "@/configs/rest";
     import {SOCKET_EMIT_CONSTANT} from "@/configs/socket-contant";
     import NoteContentControl from "@/components/NoteComponents/NoteContentControl";
+    import NoteItemOptionList from "@/components/NoteComponents/NoteItemOptionList";
 
     /**
      * Model properties
@@ -39,7 +56,7 @@
      */
     export default {
         name: "NoteItem",
-        components: {NoteContentControl, NoteItemHeaderControl},
+        components: {NoteItemOptionList, NoteContentControl, NoteItemHeaderControl},
         props: {
             value: {
                 type: Object,
@@ -130,7 +147,7 @@
                     return
                 }
 
-                if (resultData.updatedData.id !== this.itemData.id) {
+                if (resultData.updatedData.id !== this.value.id) {
                     return
                 }
 
@@ -156,7 +173,7 @@
              * Trigger to delete note item
              */
             deleteNoteItem() {
-                if (!confirm(`Are you sure to delete ${this.itemData.headline} note-item?`)) {
+                if (!confirm(`Are you sure to delete ${this.value.headline} note-item?`)) {
                     return
                 }
 
@@ -171,11 +188,22 @@
                 this.$emit('deletedNote', deleteNoteData);
             },
 
+            /**
+             * Show note-options
+             */
+            showOptions() {
+                if (!this.openOption) return
+                this.openOption()
+            },
+
+            afterOptionCreated(openFunc) {
+                this.openOption = openFunc
+            }
         },
         mounted() {
             // Create Draggable and Resizable Instance
             $(this.$el).draggable({
-                handle: '.note-toolbox',
+                handle: '.note-toolbox .drag-item',
                 containment: "parent",
                 scroll: false,
                 zIndex: 9999,

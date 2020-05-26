@@ -83,6 +83,9 @@
 
     .note-headline {
         font-size: 18px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
 
     .note-headline-on-edit {

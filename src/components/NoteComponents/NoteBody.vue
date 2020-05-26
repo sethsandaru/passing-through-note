@@ -25,14 +25,14 @@
             dragging: false,
         }),
         methods: {
+
             updatedNoteItem(index, noteItemData) {
                 this.$emit('change', index, noteItemData)
             },
+
             afterDeletedItem(data) {
                 this.$emit('delete', data.id)
             }
-        },
-        mounted() {
         }
     }
 </script>

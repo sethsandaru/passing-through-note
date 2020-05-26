@@ -1,12 +1,12 @@
 <template>
     <div id="note-space-body" class="note-space" v-if="noteData">
         <div class="note-info-block">
-            <div class="row">
-                <div class="col-md 6">
+            <div class="row mr-0">
+                <div class="col-md-6">
                     <h1 v-text="noteData.name"></h1>
                     <p v-text="noteData.description"></p>
                 </div>
-                <div class="col-md 6 text-right">
+                <div class="col-md-6 text-right">
                     <button class="btn btn-primary" @click="createNewBlankNote">
                         + Note Item
                     </button>
@@ -26,6 +26,7 @@
     import NoteBody from "@/components/NoteComponents/NoteBody";
     import {REST_CONFIG} from "@/configs/rest";
     import {SOCKET_EMIT_CONSTANT} from "@/configs/socket-contant";
+    import {NOTE_COMPONENT_SOCKET_MIXIN} from "@/extendables/traits/note-component/note-component-sockets";
 
     /**
      * @property {NoteSpacePermissionResultInterface} noteData
@@ -36,6 +37,7 @@
         props: {
             noteData: Object
         },
+        mixins: [NOTE_COMPONENT_SOCKET_MIXIN],
         data: () => ({
             noteItems: [],
         }),
@@ -44,24 +46,31 @@
              * Create new blank note through socket
              */
             createNewBlankNote() {
-                this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.CREATE, {
-                    noteSpaceId: this.noteData.id
-                })
+                // I've been thinking and I think this is the best way
+                // I need to create a new note via RestAPI
+                // then if its success => I only need to notify the listener(s) (Websocket)
+                // with this way, data is 100% integrity
+                this.$ajax.post(
+                    REST_CONFIG.get('NOTE_ITEMS.CREATE_BLANK', [this.noteData.id]),
+                    undefined,
+                    {
+                        onError: this.errorWhileCreatingBlankNote
+                    }
+                ).then(this.afterCreatedBlankNote)
             },
 
             /**
-             * Socket-After handler of Added New Note Item
-             * @param {Object} resultData
-             * @param {Object|null} resultData.data
-             * @param {Boolean} resultData.status
+             * After added a new note-item (blank) by using restAPI
+             * @param {NoteItemEntity} resultData
              */
-            afterAddedNote(resultData) {
-                if (!resultData.status) {
-                    this.$toaster.error("Error while adding a new note item. Please try again.");
-                    return
-                }
+            afterCreatedBlankNote(resultData) {
+                this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_ITEM.CREATED, resultData)
+                this.noteItems.push(resultData)
+            },
 
-                this.noteItems.push(resultData.data)
+            errorWhileCreatingBlankNote() {
+                // Show error for fun obviously =))
+                this.$toaster.error("Failed to update your note. Please try again.")
             },
 
             /**
@@ -79,7 +88,7 @@
              */
             deletedNoteItem(id) {
                 // lol remove by id @@
-                for (let i = 0; i < this.items.length; i++) {
+                for (let i = 0; i < this.noteItems.length; i++) {
                     if (this.noteItems[i].id === id) {
                         this.noteItems.splice(i, 1);
                         return;
@@ -87,31 +96,7 @@
                 }
             }
         },
-        created() {
-            this.$socket.emit(
-                SOCKET_EMIT_CONSTANT.NOTE_SPACE.ACCESS,
-                {noteSpaceId: this.noteData.id}
-            )
-        },
-        mounted() {
-            // this.retrieveNoteItems()
-        },
-        sockets: {
-            noteSpaceJoined: function (data) {
-                this.noteItems = data.noteItems || []
-            },
 
-            noteItemAdded(data) {
-                this.afterAddedNote(data);
-            },
-        },
-
-        beforeDestroy() {
-            // leave room before leave...
-            this.$socket.emit(SOCKET_EMIT_CONSTANT.NOTE_SPACE.LEAVE, {
-                noteSpaceId: this.noteData.id
-            })
-        }
     }
 </script>
 
