@@ -17,7 +17,7 @@ const REST_CONFIG = {
         NOTE_SPACE: {
             CREATE: "/note-space/create",
             AVAILABILITY: "/note-space/availability/{0}",
-            VERIFY: "/note-space/verify-passwor",
+            VERIFY: "/note-space/verify-password",
         },
         NOTE_ITEMS: {
             GET: "/note-items/list/{0}",

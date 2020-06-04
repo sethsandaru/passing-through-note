@@ -12,6 +12,10 @@
                 </ul>
             </div>
             <div class="col-md-6">
+                <AccessNoteSpaceBlock />
+
+                <hr>
+
                 <CreateNoteSpaceBlock />
             </div>
         </div>
@@ -20,9 +24,10 @@
 
 <script>
     import CreateNoteSpaceBlock from "@/components/HomeComponents/CreateNoteSpaceBlock";
+    import AccessNoteSpaceBlock from "@/components/HomeComponents/AccessNoteSpaceBlock";
     export default {
         name: "FeaturesBlock",
-        components: {CreateNoteSpaceBlock}
+        components: {AccessNoteSpaceBlock, CreateNoteSpaceBlock}
     }
 </script>
 
